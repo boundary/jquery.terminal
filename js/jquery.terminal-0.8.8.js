@@ -1,4 +1,7 @@
-/**@license
+/**
+ * PD: Added 'dontHide' to terminal.pause
+ *
+ * @license
  *       __ _____                     ________                              __
  *      / // _  /__ __ _____ ___ __ _/__  ___/__ ___ ______ __ __  __ ___  / /
  *  __ / // // // // // _  // _// // / / // _  // _//     // //  \/ // _ \/ /
@@ -3556,12 +3559,13 @@
                 // -----------------------------------------------------------------------
                 // :: Pause the terminal, it should be used for ajax calls
                 // -----------------------------------------------------------------------
-                pause: function() {
+                pause: function(dontHide) {
                     onPause();
                     if (!paused && command_line) {
                         paused = true;
                         self.disable();
-                        command_line.hidden();
+                        if (!dontHide)
+                            command_line.hidden();
                     }
                     return self;
                 },
