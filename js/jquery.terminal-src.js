@@ -3556,12 +3556,13 @@
                 // -----------------------------------------------------------------------
                 // :: Pause the terminal, it should be used for ajax calls
                 // -----------------------------------------------------------------------
-                pause: function() {
+                pause: function(noHide) {
                     onPause();
                     if (!paused && command_line) {
                         paused = true;
                         self.disable();
-                        command_line.hidden();
+                        if (!noHide)
+                            command_line.hidden();
                     }
                     return self;
                 },
@@ -3758,6 +3759,10 @@
                     } else {
                         throw "insert function argument is not a string";
                     }
+                },
+
+                get_position: function() {
+                    return command_line.position();
                 },
                 // -----------------------------------------------------------------------
                 // :: Set the prompt of the command line
