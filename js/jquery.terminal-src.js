@@ -1142,21 +1142,7 @@
                     if (e.shiftKey) {
                         self.insert('\n');
                     } else {
-                        if (history && command && !mask &&
-                            ((typeof options.historyFilter == 'function' &&
-                              options.historyFilter(command)) ||
-                             !options.historyFilter)) {
-                            history.append(command);
-                        }
-                        var tmp = command;
-                        history.reset();
-                        self.set('');
-                        if (options.commands) {
-                            options.commands(tmp);
-                        }
-                        if (typeof prompt === 'function') {
-                            draw_prompt();
-                        }
+                        self.accept();
                     }
                 } else if (e.which === 8) { //backspace
                     if (reverse_search) {
@@ -1431,6 +1417,23 @@
                     options.onCommandChange(command);
                 }
                 return self;
+            },
+            accept: function() {
+                if (history && command && !mask &&
+                    ((typeof options.historyFilter == 'function' &&
+                    options.historyFilter(command)) ||
+                    !options.historyFilter)) {
+                    history.append(command);
+                }
+                var tmp = command;
+                history.reset();
+                self.set('');
+                if (options.commands) {
+                    options.commands(tmp);
+                }
+                if (typeof prompt === 'function') {
+                    draw_prompt();
+                }
             },
             get: function() {
                 return command;
@@ -3761,9 +3764,21 @@
                     }
                 },
 
+                // PD:
+                //
                 get_position: function() {
                     return command_line.position();
                 },
+
+                // PD:
+                //
+                accept : function() {
+                    setTimeout(function()
+                    {
+                        command_line.accept();
+                    }, 0);
+                },
+
                 // -----------------------------------------------------------------------
                 // :: Set the prompt of the command line
                 // -----------------------------------------------------------------------
