@@ -819,7 +819,7 @@
         }
         // -----------------------------------------------------------------------
         // :: Search through command line history. If next is not defined or false
-        // :: it searches for the first item from the end. If true it search for 
+        // :: it searches for the first item from the end. If true it search for
         // :: the next item
         // -----------------------------------------------------------------------
         function reverse_history_search(next) {
@@ -2946,10 +2946,12 @@
         }
         // -----------------------------------------------------------------------
         // Redraw all lines
+	    //
+	    // PD: Modified to not remove lines marked with class 'donotremove'
         // -----------------------------------------------------------------------
         function redraw() {
             command_line.resize(num_chars);
-            var o = output.empty().detach();
+            var o = output.children(':not(.donotremove)').remove(); //.detach();
             var lines_to_show;
             if (settings.outputLimit >= 0) {
                 // flush will limit lines but if there is lot of
@@ -2965,7 +2967,8 @@
             $.each(lines_to_show, function(i, line) {
                 draw_line.apply(null, line); // line is an array
             });
-            command_line.before(o);
+	        o.after(command_line);
+            //command_line.before(o);
             self.flush();
         }
         // -----------------------------------------------------------------------
@@ -3636,7 +3639,7 @@
                 },
                 // -----------------------------------------------------------------------
                 // :: Make the terminal in focus or blur depending on the first argument.
-                // :: If there is more then one terminal it will switch to next one, 
+                // :: If there is more then one terminal it will switch to next one,
                 // :: if the second argument is set to true the events will be not fired.
                 // :: Used on init
                 // -----------------------------------------------------------------------
@@ -3770,6 +3773,13 @@
                     return command_line.position();
                 },
 
+	            // PD:
+	            //
+	            set_position: function(offset) {
+
+		            return command_line.position(offset);
+	            },
+
                 // PD:
                 //
                 accept : function() {
@@ -3778,6 +3788,20 @@
                         command_line.accept();
                     }, 0);
                 },
+
+	            // PD:
+	            //
+	            get_lines: function() {
+		            return lines.length;
+	            },
+
+	            // PD:
+	            remove_lines: function(index, len, fRedraw)
+	            {
+		            lines.splice(index, len);
+		            if (fRedraw)
+		                redraw();
+	            },
 
                 // -----------------------------------------------------------------------
                 // :: Set the prompt of the command line
